@@ -1,36 +1,38 @@
-<?php 
+<?php
+require_once __DIR__ . "/Env.php";
 
-__DIR__ ."/../Env.php";
-class Database{
-    private static ?PDO $instance=null;
+Env::load(__DIR__ . "/../.env");
+class Database {
 
-private function __construct(){}
-public static function getInstance() : PDO{
-    if(self::$instance==null){
-        try{
+    private static ?PDO $instance = null;
 
-        self::$instance= new PDO(
-                "mysql:host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_NAME'],
-                $_ENV['DB_USER'],
-                $_ENV['DB_PASS']
-            );
-         
+    private function __construct() {}
 
-           self::$instance->setAttribute(
-            PDO::ATTR_ERRMODE,
-            PDO::ERRMODE_EXCEPTION
+    public static function getInstance(): PDO {
 
-           );
-        }catch(PDOException $e){
+        if (self::$instance === null) {
 
-        die ("Connexion echouee : ".$e->getMessage());
+            try {
+
+                self::$instance = new PDO(
+                    "mysql:host=" . $_ENV['DB_HOST'] .
+                    ";dbname=" . $_ENV['DB_NAME'],
+                    $_ENV['DB_USER'],
+                    $_ENV['DB_PASS']
+                );
+
+                self::$instance->setAttribute(
+                    PDO::ATTR_ERRMODE,
+                    PDO::ERRMODE_EXCEPTION
+                );
+
+            } catch (PDOException $e) {
+
+                die("Connexion échouée : " . $e->getMessage());
+            }
         }
-    }return self::$instance;
+
+        return self::$instance;
+    }
 }
-
-
-
-}
-
-
 ?>

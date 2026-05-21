@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 
 class Env {
 
@@ -13,11 +12,20 @@ class Env {
 
         foreach ($lines as $line) {
 
-            list($key, $value) = explode("=", $line, 2);
+            $line = trim($line);
+
+            
+            if ($line === '' || str_starts_with($line, '#')) {
+                continue;
+            }
+
+            if (!str_contains($line, '=')) {
+                continue;
+            }
+
+            [$key, $value] = explode('=', $line, 2);
 
             $_ENV[trim($key)] = trim($value);
         }
     }
 }
-
-?>
