@@ -19,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($nom) && !empty($prenom) && !empty($email) && !empty($password)) {
 
-        // check email exists
         $check = $pdo->prepare("SELECT id FROM apprenants WHERE email = ?");
         $check->execute([$email]);
 
