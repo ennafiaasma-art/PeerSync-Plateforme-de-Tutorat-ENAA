@@ -1,30 +1,45 @@
 <?php
 session_start();
+
 require_once __DIR__ . "/../config/Database.php";
+require_once __DIR__ . "/../src/repository/UserRepository.php";
 
 $pdo = Database::getInstance();
+$userRepo = new UserRepository($pdo);
 
 $error = "";
+
+
+
+
+if (isset($_SESSION["user"])) {
+    header("Location: ../public/dashboard.php");
+    exit;
+}
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $email = trim($_POST["email"]);
     $password = trim($_POST["password"]);
 
-    $stmt = $pdo->prepare("SELECT * FROM apprenants WHERE email = :email");
-    $stmt->execute([":email" => $email]);
+    if (!empty($email) && !empty($password)) {
 
-    $user = $stmt->fetch(PDO::FETCH_OBJ);
+        $user = $userRepo->findByEmail($email);
 
-    if ($user && password_verify($password, $user->password)) {
+        if ($user && password_verify($password, $user->password)) {
 
-        $_SESSION["user"] = $user;
+            $_SESSION["user"] = $user;
 
-        header("Location: ../public/dashboard.php");
-        exit;
+            header("Location: ../public/dashboard.php");
+            exit;
+
+        } else {
+            $error = "Email ou mot de passe incorrect";
+        }
 
     } else {
-        $error = "Email ou mot de passe incorrect";
+        $error = "Veuillez remplir tous les champs";
     }
 }
 ?>
@@ -34,79 +49,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Apprenant</title>
-
+    <title>Login - PeerSync</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gradient-to-r from-blue-600 to-blue-400 min-h-screen flex items-center justify-center">
 
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+<div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-lg">
 
-        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">
-            Login Apprenant
-        </h1>
+    <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">
+      Login Apprenant
+    </h1>
 
-        <?php if (!empty($error)) : ?>
+ 
+    <?php if (!empty($error)) : ?>
+        <div class="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
 
-            <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-                <?= htmlspecialchars($error) ?>
-            </div>
+    <form method="POST" class="space-y-5">
 
-        <?php endif; ?>
+        <input type="email"
+               name="email"
+               required
+               placeholder="Email"
+               class="w-full border p-3 rounded-lg">
 
-        <form method="POST" class="space-y-5">
+        <input type="password"
+               name="password"
+               required
+               placeholder="Mot de passe"
+               class="w-full border p-3 rounded-lg">
 
-            <div>
-                <label class="block mb-2 font-medium">
-                    Email
-                </label>
+        <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
+            Se connecter
+        </button>
 
-                <input
-                    type="email"
-                    name="email"
-                    required
-                    class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-            </div>
+    </form>
 
-            <div>
-                <label class="block mb-2 font-medium">
-                    Mot de passe
-                </label>
+    <p class="text-center mt-6 text-gray-600">
+        Pas de compte ?
+        <a href="register.php" class="text-blue-600 font-semibold">
+            S'inscrire
+        </a>
+    </p>
 
-                <input
-                    type="password"
-                    name="password"
-                    required
-                    class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-            </div>
-
-            <button
-                type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
-            >
-                Se connecter
-              
-            </button>
-
-        </form>
-
-        <p class="text-center mt-6 text-gray-600">
-            Vous n'avez pas de compte ?
-
-            <a
-                href="regester.php"
-                class="text-blue-600 font-semibold hover:underline"
-            >
-                S'inscrire
-            </a>
-        </p>
-
-    </div>
+</div>
 
 </body>
-
 </html>
