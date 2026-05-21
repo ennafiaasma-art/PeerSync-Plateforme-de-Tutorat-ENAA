@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </form>
 
     <p class="text-center mt-4 text-gray-600">
-        Déjà un compte ?
+        fait connect 
         <a href="login_process.php" class="text-blue-600 font-semibold">Se connecter</a>
     </p>
 

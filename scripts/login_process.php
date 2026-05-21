@@ -1,8 +1,5 @@
 <?php
-declare(strict_types=1);
-
 session_start();
-
 require_once __DIR__ . "/../config/Database.php";
 
 $pdo = Database::getInstance();
@@ -14,33 +11,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST["email"]);
     $password = trim($_POST["password"]);
 
-    $sql = "SELECT * FROM apprenants WHERE email = :email";
-
-    $stmt = $pdo->prepare($sql);
-
-    $stmt->execute([
-        ":email" => $email
-    ]);
+    $stmt = $pdo->prepare("SELECT * FROM apprenants WHERE email = :email");
+    $stmt->execute([":email" => $email]);
 
     $user = $stmt->fetch(PDO::FETCH_OBJ);
 
-    if ($user) {
+    if ($user && password_verify($password, $user->password)) {
 
-        if (password_verify($password, $user->password)) {
+        $_SESSION["user"] = $user;
 
-            $_SESSION["user"] = $user;
-
-            header("Location: ../public/dashboard.php");
-            exit;
-
-        } else {
-
-            $error = "Mot de passe incorrect";
-        }
+        header("Location: ../public/dashboard.php");
+        exit;
 
     } else {
-
-        $error = "Compte introuvable. Veuillez vous inscrire.";
+        $error = "Email ou mot de passe incorrect";
     }
 }
 ?>

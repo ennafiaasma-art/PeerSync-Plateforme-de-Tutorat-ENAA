@@ -2,11 +2,25 @@
 session_start();
 
 if (!isset($_SESSION["user"])) {
-    header("Location: ../public/login.php");
+    header("Location: login.php");
     exit;
 }
 
 $user = $_SESSION["user"];
+
+$nom = $user->nom;
+$prenom = $user->prenom;
+$email = $user->email;
+
+$nomComplet = $prenom . " " . $nom;
+
+/* LOGOUT */
+if (isset($_GET["logout"])) {
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,58 +28,58 @@ $user = $_SESSION["user"];
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Apprenant</title>
+    <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100">
 
-   
-    <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold">Dashboard Apprenant</h1>
+<div class="flex min-h-screen">
 
-        <div>
-            <span class="mr-4">
-                <?= htmlspecialchars($user->email ?? $user["email"]) ?>
-            </span>
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-blue-700 text-white p-5">
 
-            <a href="../scripts/logout.php" class="bg-red-500 px-3 py-2 rounded">
+        <h2 class="text-xl font-bold mb-6">
+             <?= htmlspecialchars($nomComplet) ?>
+        </h2>
+
+        <nav class="space-y-3">
+
+            
+
+            <a href="profil.php" class="block p-2 hover:bg-blue-600 rounded">
+                Profile
+            </a>
+
+            <a href="request_detail.php" class="block p-2 hover:bg-blue-600 rounded">
+                Demandes
+            </a>
+
+            <a href="?logout=1" class="block p-2 bg-red-500 hover:bg-red-600 rounded">
                 Logout
             </a>
-        </div>
-    </div>
+
+        </nav>
+
+    </aside>
 
    
-    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <main class="flex-1 p-8">
 
-        
         <div class="bg-white p-6 rounded-2xl shadow">
-            <h2 class="text-2xl font-bold mb-4">Mon Profil</h2>
 
-            <p><strong>Email :</strong>
-                <?= htmlspecialchars($user->email ?? $user["email"]) ?>
-            </p>
+            <h1 class="text-2xl font-bold mb-4">
+                Welcome  : <?= htmlspecialchars($nomComplet) ?>
+            </h1>
 
-            <a href="../public/profile.php"
-               class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded">
-                Voir Profil
-            </a>
+     <p class="text-gray-600">
+    Tu peux aider d’autres étudiants et aussi demander de l’aide quand tu en as besoin.
+</p>
         </div>
 
-       
-        <div class="bg-white p-6 rounded-2xl shadow">
-            <h2 class="text-2xl font-bold mb-4">Mes Demandes</h2>
+    </main>
 
-            <p>Voir les détails de tes demandes d’aide.</p>
-
-            <a href="../public/request_detail.php"
-               class="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded">
-                Request Detail
-            </a>
-        </div>
-
-    </div>
+</div>
 
 </body>
-
 </html>
