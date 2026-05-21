@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST["email"]);
     $password = trim($_POST["password"]);
 
-    $sql = "SELECT * FROM apprenant WHERE email = :email";
+    $sql = "SELECT * FROM apprenants WHERE email = :email";
 
     $stmt = $pdo->prepare($sql);
 
@@ -105,6 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
             >
                 Se connecter
+              
             </button>
 
         </form>
@@ -113,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             Vous n'avez pas de compte ?
 
             <a
-                href="register.php"
+                href="regester.php"
                 class="text-blue-600 font-semibold hover:underline"
             >
                 S'inscrire
