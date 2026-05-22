@@ -2,10 +2,9 @@
 
 namespace App\enums;
 
-enum Status: string
+class Status
 {
-    case EN_ATTENTE = 'EN_ATTENTE';
-    case ASSIGNE = 'ASSIGNE';
-    case RESOLUE = 'RESOLUE';
+    const EN_ATTENTE = 'EN_ATTENTE';
+    const ASSIGNE = 'ASSIGNE';
+    const RESOLUE = 'RESOLUE';
 }
-?>

@@ -1,11 +1,13 @@
 <?php
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../src/enums/Status.php";
 
-use App\Enum\Status;
+use App\enums\Status;
 
 $pdo = Database::getInstance();
 
@@ -22,19 +24,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $userId = $_SESSION["user"]->id;
 
-    $sql = "INSERT INTO demandes_aide
+    $sql = "INSERT INTO demander_aides
             (titre, description, technologie, status, id_apprenant)
             VALUES (?, ?, ?, ?, ?)";
 
     $stmt = $pdo->prepare($sql);
 
-    $stmt->execute([
-        $titre,
-        $description,
-        $technologie,
-        Status::EN_ATTENTE->value,
-        $userId
-    ]);
+   $stmt->execute([
+    $titre,
+    $description,
+    $technologie,
+    Status::EN_ATTENTE,
+    $userId
+]);
 
     header("Location: ../public/dashboard.php");
     exit;

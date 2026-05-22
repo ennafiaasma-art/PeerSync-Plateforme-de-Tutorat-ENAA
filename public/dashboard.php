@@ -1,11 +1,15 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once __DIR__ . "/../config/Database.php";
+require_once __DIR__ . "/../scripts/request_process.php";
+require_once __DIR__ . "/../src/enums/Status.php";
 
 $pdo = Database::getInstance();
 
-/* SECURITY */
+
 if (!isset($_SESSION["user"])) {
     header("Location: login.php");
     exit;
@@ -19,21 +23,20 @@ $email = $user->email;
 
 $nomComplet = $prenom . " " . $nom;
 
-/* LOGOUT */
+
 if (isset($_GET["logout"])) {
     session_unset();
     session_destroy();
-    header("Location: ./scripts/login_process.php");
+    header("Location: ../scripts/login_process.php");
     exit;
 }
 
-/* GET REQUESTS */
+
 $stmt = $pdo->prepare("
     SELECT * FROM demander_aides
     WHERE id_apprenant = ?
     ORDER BY id DESC
 ");
-
 $stmt->execute([$user->id]);
 
 $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -52,8 +55,8 @@ $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 <div class="flex min-h-screen">
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-blue-700 text-white p-5">
+   
+    <aside class="w-64 bg-blue-800 text-white p-5">
 
         <h2 class="text-xl font-bold mb-6">
             <?= htmlspecialchars($nomComplet) ?>
@@ -66,7 +69,7 @@ $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
             </a>
 
             <a href="request_detail.php" class="block p-2 hover:bg-blue-600 rounded">
-                Demandes
+                Ajouter une demande
             </a>
 
             <a href="?logout=1" class="block p-2 bg-red-500 hover:bg-red-600 rounded">
@@ -77,10 +80,10 @@ $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
 
     </aside>
 
-    <!-- MAIN -->
+    
     <main class="flex-1 p-8">
 
-        <!-- WELCOME -->
+        
         <div class="bg-white p-6 rounded-2xl shadow mb-6">
 
             <h1 class="text-2xl font-bold mb-4">
@@ -93,37 +96,53 @@ $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
 
         </div>
 
-        <!-- REQUESTS -->
-        <div class="space-y-4">
+        
+<div class="mt-6">
 
-            <?php foreach ($requests as $r): ?>
+    <h2 class="text-2xl font-bold mb-4">
+        Mes demandes d’aide
+    </h2>
 
-                <div class="bg-white p-4 rounded shadow">
+    <?php if (count($requests) > 0): ?>
 
-                    <h3 class="font-bold text-blue-600">
-                        <?= htmlspecialchars($r->titre) ?>
-                    </h3>
+        <?php foreach ($requests as $r): ?>
 
-                    <p><?= htmlspecialchars($r->description) ?></p>
+            <div class="bg-white p-5 rounded-2xl shadow mb-4">
 
-                    <p class="text-sm text-gray-500">
-                        Tech: <?= htmlspecialchars($r->technologie) ?>
-                    </p>
+                <h3 class="text-xl font-bold text-blue-600 mb-2">
+                    <?= htmlspecialchars($r->titre) ?>
+                </h3>
 
-                    <span class="px-3 py-1 rounded text-white
-                        <?= $r->status === 'EN_ATTENTE' ? 'bg-yellow-500' : '' ?>
-                        <?= $r->status === 'ASSIGNE' ? 'bg-blue-500' : '' ?>
-                        <?= $r->status === 'RESOLUE' ? 'bg-green-500' : '' ?>
-                    ">
-                        <?= $r->status ?>
-                    </span>
+                <p class="text-gray-700 mb-3">
+                    <?= htmlspecialchars($r->description) ?>
+                </p>
 
-                </div>
+                <p class="text-sm text-gray-500 mb-3">
+                    Technologie :
+                    <?= htmlspecialchars($r->technologie) ?>
+                </p>
 
-            <?php endforeach; ?>
+                <span class="px-3 py-1 rounded text-white text-sm
+                    <?= $r->status === 'EN_ATTENTE' ? 'bg-yellow-500' : '' ?>
+                    <?= $r->status === 'ASSIGNE' ? 'bg-blue-500' : '' ?>
+                    <?= $r->status === 'RESOLUE' ? 'bg-green-500' : '' ?>
+                ">
+                    <?= htmlspecialchars($r->status) ?>
+                </span>
 
+            </div>
+
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <div class="bg-white p-4 rounded shadow">
+            Aucune demande trouvée.
         </div>
 
+    <?php endif; ?>
+
+</div>
     </main>
 
 </div>

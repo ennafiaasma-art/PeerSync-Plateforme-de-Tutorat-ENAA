@@ -16,7 +16,7 @@
         Créer une demande d’aide
     </h1>
 
-    <form method="POST" action="../scripts/create_request_process.php" class="space-y-4">
+    <form method="POST" action="/PeerSync/scripts/request_process.php" class="space-y-4">
 
         <input type="text" name="titre" placeholder="Titre"
                class="w-full border p-3 rounded" required>

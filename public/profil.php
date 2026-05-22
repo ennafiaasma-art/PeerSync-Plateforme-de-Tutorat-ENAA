@@ -36,8 +36,8 @@ if (isset($_GET["logout"])) {
 
 <div class="flex">
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-blue-700 text-white min-h-screen p-5">
+   
+    <aside class="w-64 bg-blue-800 text-white min-h-screen p-5">
 
         <h2 class="text-xl font-bold mb-6">
             <?= htmlspecialchars($nomComplet) ?>
@@ -69,17 +69,17 @@ if (isset($_GET["logout"])) {
 
     </aside>
 
-    <!-- CONTENT -->
+    
     <main class="flex-1 p-8">
 
-        <!-- CARD PROFILE -->
+        
         <div class="bg-white p-8 rounded-2xl shadow max-w-2xl mx-auto">
 
             <h1 class="text-3xl font-bold mb-6 text-blue-600">
  Mon Profil
             </h1>
 
-            <!-- Avatar -->
+           
             <div class="flex items-center gap-4 mb-6">
 
                 <div class="w-16 h-16 bg-blue-600 text-white flex items-center justify-center rounded-full text-xl font-bold">
