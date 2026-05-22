@@ -1,14 +1,17 @@
 <?php
+namespace App\Entities;
 class Apprenant{
 private string $nom;
+private int $id;
 private string $prenom;
 private string $email;
 private string $password;
-public function __construct(string $nom ,string $prenom,string $email,string $password){
+public function __construct(string $nom ,string $prenom,string $email,string $password ,int $id){
     $this->nom=$nom;
     $this->prenom=$prenom;
     $this->email=$email;
     $this->password=$password;
+    $this->id=$id;
 }
 
 
@@ -37,6 +40,11 @@ public function getpassword() :string{
 }
 public function setpassword($password){
    $this->password =$password;
+}
+
+public function getId(): int
+{
+    return $this->id;
 }
 
 
