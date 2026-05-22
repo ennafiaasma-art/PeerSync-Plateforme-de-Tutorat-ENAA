@@ -22,7 +22,7 @@ class Demande_aide {
         $this->id_tuteur = $id_tuteur;
     }
 
-    // Getters
+   
 
     public function getTitre(): string {
         return $this->titre;
@@ -44,7 +44,7 @@ class Demande_aide {
         return $this->id_tuteur;
     }
 
-    // Setters
+    
 
     public function setTitre(string $titre){
         $this->titre = $titre;

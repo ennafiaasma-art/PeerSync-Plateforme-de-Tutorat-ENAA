@@ -7,7 +7,7 @@ require_once __DIR__ . "/../config/Database.php";
 
 $pdo = Database::getInstance();
 
-/* SECURITY */
+
 if (!isset($_SESSION["user"])) {
     header("Location: login.php");
     exit;
